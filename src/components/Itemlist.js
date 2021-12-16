@@ -4,8 +4,6 @@ import styled from "styled-components"
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined"
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined"
 
-import ItemModal from "./ItemModal"
-
 // 1
 const StyledDiv = styled.div`
   border: 1px solid #d0d0d0;
@@ -51,10 +49,12 @@ const StyledCheckBox = styled.input`
   height: 16px;
   margin: 24px;
 `
+
 const StyledTextContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  text-decoration: ${(props) => (props.checked ? "line-through" : "none")};
 `
 
 const StyledDecription = styled.div`
@@ -72,15 +72,22 @@ const StyledButton = styled.button`
   padding: 8px 16px;
 `
 
-const CreateCard = (item, handelEdit) => {
+const CreateCard = (item, handelEdit, handleCheckBox) => {
   return (
     <StyledDiv key={item.id + item.name}>
       <StyledContainer>
         <StyledLeftSide>
           <div>
-            <StyledCheckBox type="checkbox" />
+            <StyledCheckBox
+              type="checkbox"
+              onChange={() => handleCheckBox(item)}
+              checked={item.checked}
+            />
           </div>
-          <StyledTextContainer>
+          <StyledTextContainer
+            className="item-container"
+            checked={item.checked}
+          >
             <div>{item.name}</div>
             <StyledDecription>{item.description}</StyledDecription>
           </StyledTextContainer>
@@ -99,6 +106,7 @@ const ItemList = ({
   setShowModal,
   setActiveItem,
   setShowDeleteModal,
+  handleCheck,
 }) => {
   const handelEdit = (item, deleteItem = false) => {
     setActiveItem(item)
@@ -107,6 +115,10 @@ const ItemList = ({
     } else {
       setShowModal(true)
     }
+  }
+
+  const handleCheckBox = (item) => {
+    handleCheck(item)
   }
 
   return (
@@ -119,7 +131,7 @@ const ItemList = ({
           </StyledButton>
         </div>
       </StyledHeader>
-      {list.map((item) => CreateCard(item, handelEdit))}
+      {list.map((item) => CreateCard(item, handelEdit, handleCheckBox))}
     </>
   )
 }

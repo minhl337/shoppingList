@@ -19,6 +19,7 @@ const App = () => {
       name: itemName,
       description: itemDescription,
       count: itemCount,
+      checked: false,
     }
 
     setShoppingList([...shoppingList, newItem])
@@ -34,6 +35,13 @@ const App = () => {
       updatedList[indexOfItem] = item
     }
     setActiveItem(null)
+    setShoppingList(updatedList)
+  }
+
+  const handleCheck = (item) => {
+    const indexOfItem = shoppingList.findIndex((thing) => thing.id === item.id)
+    const updatedList = [...shoppingList]
+    updatedList[indexOfItem] = { ...item, checked: !item.checked }
     setShoppingList(updatedList)
   }
 
@@ -55,6 +63,7 @@ const App = () => {
           setShoppingList={setShoppingList}
           setActiveItem={setActiveItem}
           setShowDeleteModal={setShowDeleteModal}
+          handleCheck={handleCheck}
         />
       ) : (
         <EmptyCart setShowModal={setShowModal} />

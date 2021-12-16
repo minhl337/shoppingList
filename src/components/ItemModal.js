@@ -149,6 +149,7 @@ const ItemModal = ({
         name: itemName,
         description: itemDescription,
         count: itemCount,
+        checked: item.checked,
       }
       handleEdit(updatedItem)
     } else {
