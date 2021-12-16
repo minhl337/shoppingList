@@ -1,25 +1,76 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react"
 
-function App() {
+import "./App.css"
+
+import EmptyCart from "./components/EmptyCart"
+import ItemModal from "./components/ItemModal"
+import ItemList from "./components/Itemlist"
+import DeleteModal from "./components/DeletModal"
+
+const App = () => {
+  const [shoppingList, setShoppingList] = React.useState([])
+  const [showModal, setShowModal] = React.useState(false)
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false)
+  const [activeItem, setActiveItem] = React.useState()
+
+  const handleSubmit = (itemName, itemDescription, itemCount) => {
+    const newItem = {
+      id: shoppingList.length + 1,
+      name: itemName,
+      description: itemDescription,
+      count: itemCount,
+    }
+
+    setShoppingList([...shoppingList, newItem])
+  }
+
+  const handleEdit = (item, deleteItem = false) => {
+    const indexOfItem = shoppingList.findIndex((thing) => thing.id === item.id)
+    const updatedList = [...shoppingList]
+    if (deleteItem) {
+      updatedList.splice(indexOfItem, 1)
+      setShowDeleteModal(false)
+    } else {
+      updatedList[indexOfItem] = item
+    }
+    setActiveItem(null)
+    setShoppingList(updatedList)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+      {showDeleteModal && (
+        <DeleteModal
+          setShowModal={setShowDeleteModal}
+          setActiveItem={setActiveItem}
+          item={activeItem}
+          handleEdit={handleEdit}
+        />
+      )}
+      <div className="header">SHOPPING LIST</div>
+      {shoppingList.length ? (
+        <ItemList
+          list={shoppingList}
+          setShowModal={setShowModal}
+          setShoppingList={setShoppingList}
+          setActiveItem={setActiveItem}
+          setShowDeleteModal={setShowDeleteModal}
+        />
+      ) : (
+        <EmptyCart setShowModal={setShowModal} />
+      )}
+
+      {showModal && (
+        <ItemModal
+          setShowModal={setShowModal}
+          handleSubmit={handleSubmit}
+          item={activeItem}
+          setActiveItem={setActiveItem}
+          handleEdit={handleEdit}
+        />
+      )}
+    </>
+  )
 }
 
-export default App;
+export default App
